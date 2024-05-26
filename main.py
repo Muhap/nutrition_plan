@@ -9,6 +9,8 @@ from pydantic import BaseModel, conlist
 from typing import List, Optional
 import pandas as pd
 from random import uniform as rnd
+from ImageFinder.ImageFinder import get_images_links as find_image
+
 
 app = Flask(__name__)
 
@@ -230,6 +232,11 @@ def get_recommendations():
     weight_loss = weights[weight_loss_option]
     person = Person(age, height, weight, gender, activity, meals_calories_perc, weight_loss)
     recommendations = person.generate_recommendations()
+
+    for meal in recommendations:
+        for recipe in meal:
+            recipe['image_link'] = find_image(recipe['Name'])
+
     print(recommendations)
     return jsonify(recommendations)
 
